@@ -38,7 +38,7 @@ class XyPrinter
             'sn' => $snlist['sn'],
             'name' => $snlist['name'],
         ];
-        if ( $snlist['cardno'] ) {
+        if ( isset($snlist['cardno']) ) {
             $data['cardno'] = $snlist['cardno'];
         }
         $result = $this->getCurlInfo($url,$data);
