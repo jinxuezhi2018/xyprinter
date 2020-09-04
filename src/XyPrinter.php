@@ -15,8 +15,178 @@ class XyPrinter
         'data'=>[]
     ];
 
+    /*
+     * 0 表示离线
+     * 1 表示在线正常
+     * 2 表示在线异常
+     * 备注：异常一般情况是缺纸，离线的判断是打印机与服务器失去联系超过 30 秒
+     *
+     * */
+    protected $printerStatus = [
+        '0'=>'离线',
+        '1'=>'正常',
+        '2'=>'异常'
+    ];
+
     public function __construct( $config=[] ){
         $this->config = array_merge($this->config,$config);
+    }
+
+    /**
+     * 芯烨云 - 清空待打印队列
+     *
+     */
+    public function delPrinterQueue($sn,$debug=0) {
+        if ( empty($sn) ) {
+            $this->result['msg'] = '设备编号不能为空!';
+            return $this->result;
+        }
+        $timestamp = time();
+        $url = 'https://open.xpyun.net/api/openapi/xprinter/delPrinterQueue';
+        $data = [
+            'user' => $this->config['user'],
+            'timestamp' => $timestamp,
+            'sign' => $this->getSign($timestamp),
+            'debug' => $debug,
+            'sn' => $sn
+        ];
+        $result = $this->getCurlInfo($url,$data);
+        if ( isset($result['code']) && intval($result['code'])==0 ) {
+            $this->result['status'] = true;
+            $this->result['data'] = $result['data'];
+        }else{
+            $this->result['status'] = false;
+            $this->result['msg'] = $result['msg'];
+        }
+        return $this->result;
+    }
+
+    /**
+     * 芯烨云 - 设置打印机语音类型
+     *
+     */
+    public function setVoiceType($sn,$voiceType=3,$debug=0) {
+        if ( empty($sn) ) {
+            $this->result['msg'] = '设备编号不能为空!';
+            return $this->result;
+        }
+        $timestamp = time();
+        $url = 'https://open.xpyun.net/api/openapi/xprinter/setVoiceType';
+        $data = [
+            'user' => $this->config['user'],
+            'timestamp' => $timestamp,
+            'sign' => $this->getSign($timestamp),
+            'debug' => $debug,
+            'sn' => $sn,
+            'voiceType' => $voiceType
+        ];
+        $result = $this->getCurlInfo($url,$data);
+        if ( isset($result['code']) && intval($result['code'])==0 ) {
+            $this->result['status'] = true;
+            $this->result['data'] = $result['data'];
+        }else{
+            $this->result['status'] = false;
+            $this->result['msg'] = $result['msg'];
+        }
+        return $this->result;
+    }
+
+
+    /**
+     * 芯烨云 - 打印小票订单
+     *
+     */
+    public function print($sn,$content,$debug=0) {
+        if ( empty($sn) ) {
+            $this->result['msg'] = '设备编号不能为空!';
+            return $this->result;
+        }
+        if ( empty($content) ) {
+            $this->result['msg'] = '打印内容不能为空!';
+            return $this->result;
+        }
+        $timestamp = time();
+        $url = 'https://open.xpyun.net/api/openapi/xprinter/print';
+        $data = [
+            'user' => $this->config['user'],
+            'timestamp' => $timestamp,
+            'sign' => $this->getSign($timestamp),
+            'debug' => $debug,
+            'sn' => $sn,
+            'content' => $content
+        ];
+        $result = $this->getCurlInfo($url,$data);
+        if ( isset($result['code']) && intval($result['code'])==0 ) {
+            $this->result['status'] = true;
+            $this->result['data'] = $result['data'];
+        }else{
+            $this->result['status'] = false;
+            $this->result['msg'] = $result['msg'];
+        }
+        return $this->result;
+    }
+
+    /**
+     * 芯烨云 - 查询指定打印机某天的订单统计数
+     *
+     */
+    public function queryOrderStatis( $sn,$date,$debug=0 ) {
+        if ( empty($sn) ) {
+            $this->result['msg'] = '设备编号不能为空!';
+            return $this->result;
+        }
+        if ( empty($date) ) {
+            $this->result['msg'] = '查询日期不能为空!';
+            return $this->result;
+        }
+        $timestamp = time();
+        $url = 'https://open.xpyun.net/api/openapi/xprinter/queryOrderStatis';
+        $data = [
+            'user' => $this->config['user'],
+            'timestamp' => $timestamp,
+            'sign' => $this->getSign($timestamp),
+            'debug' => $debug,
+            'sn' => $sn,
+            'date' => date('Y-m-d',$date)
+        ];
+        $result = $this->getCurlInfo($url,$data);
+        if ( isset($result['code']) && intval($result['code'])==0 ) {
+            $this->result['status'] = true;
+            $this->result['data'] = $result['data'];
+        }else{
+            $this->result['status'] = false;
+            $this->result['msg'] = $result['msg'];
+        }
+        return $this->result;
+    }
+
+    /**
+     * 芯烨云 - 获取指定打印机状态
+     *
+     */
+    public function queryPrinterStatus( $sn,$debug=0 ){
+        if ( empty($sn) ) {
+            $this->result['msg'] = '设备编号不能为空!';
+            return $this->result;
+        }
+        $timestamp = time();
+        $url = 'https://open.xpyun.net/api/openapi/xprinter/queryPrinterStatus';
+        $data = [
+            'user' => $this->config['user'],
+            'timestamp' => $timestamp,
+            'sign' => $this->getSign($timestamp),
+            'debug' => $debug,
+            'sn' => $sn
+        ];
+        $result = $this->getCurlInfo($url,$data);
+        if ( isset($result['code']) && intval($result['code'])==0 ) {
+            $this->result['status'] = true;
+            $this->result['data'] = $this->printerStatus[$result['data']];
+        }else{
+            $this->result['status'] = false;
+            $this->result['msg'] = $result['msg'];
+        }
+        return $this->result;
     }
 
     /**
