@@ -1,0 +1,19 @@
+{
+    "name": "xuezhitech/tp5-xy-printer",
+    "description": "芯烨云打印接口",
+    "authors": [
+        {
+            "name": "xuezhitech",
+            "email": "jinxuezhi@xuezhi.info"
+        }
+    ],
+    "license": "Apache-2.0",
+    "require": {
+    	"topthink/framework": "5.1.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "xuezhitech\\xyprinter\\": "src/"
+        }
+    }
+}
