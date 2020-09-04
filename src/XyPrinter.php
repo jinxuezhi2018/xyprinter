@@ -47,7 +47,7 @@ class XyPrinter
             $this->result['data'] = $result;
         }else{
             $this->result['status'] = false;
-            $this->result['data'] = $result['msg'];
+            $this->result['msg'] = $result['msg'];
         }
         return $this->result;
     }
