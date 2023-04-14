@@ -6,7 +6,9 @@ class XyPrinter
 {
     protected $config = [
         'user' => '',
-        'key' => ''
+        'key' => '',
+        'mode' => 0, // 打印模式：默认0
+        'expiresIn' => 60, //订单有效期，单位：秒。
     ];
 
     protected $result = [
@@ -30,6 +32,64 @@ class XyPrinter
 
     public function __construct( $config=[] ){
         $this->config = array_merge($this->config,$config);
+    }
+
+    /**
+     * 芯烨云 - 批量获取指定打印机状态
+     *
+     */
+    public function queryPrintersStatus( $snlist=[],$debug=0 ){
+        if ( empty($snlist) ) {
+            $this->result['msg'] = '设备编号不能为空!';
+            return $this->result;
+        }
+        $timestamp = time();
+        $url = 'https://open.xpyun.net/api/openapi/xprinter/queryPrintersStatus';
+        $data = [
+            'user' => $this->config['user'],
+            'timestamp' => $timestamp,
+            'sign' => $this->getSign($timestamp),
+            'debug' => $debug,
+            'snlist' => $snlist
+        ];
+        $result = $this->getCurlInfo($url,$data);
+        if ( isset($result['code']) && intval($result['code'])==0 ) {
+            $this->result['status'] = true;
+            $this->result['data'] = $this->printerStatus[$result['data']];
+        }else{
+            $this->result['status'] = false;
+            $this->result['msg'] = $result['msg'];
+        }
+        return $this->result;
+    }
+
+    /**
+     * 芯烨云 - 查询订单是否打印成功
+     *
+     */
+    public function queryOrderState($orderId,$debug=0) {
+        if ( empty($orderId) ) {
+            $this->result['msg'] = '订单编号不能为空!';
+            return $this->result;
+        }
+        $timestamp = time();
+        $url = 'https://open.xpyun.net/api/openapi/xprinter/queryOrderState';
+        $data = [
+            'user' => $this->config['user'],
+            'timestamp' => $timestamp,
+            'sign' => $this->getSign($timestamp),
+            'debug' => $debug,
+            'orderId' => $orderId
+        ];
+        $result = $this->getCurlInfo($url,$data);
+        if ( isset($result['code']) && intval($result['code'])==0 ) {
+            $this->result['status'] = true;
+            $this->result['data'] = $result['data'];
+        }else{
+            $this->result['status'] = false;
+            $this->result['msg'] = $result['msg'];
+        }
+        return $this->result;
     }
 
     /**
