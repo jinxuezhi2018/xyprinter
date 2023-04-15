@@ -4,11 +4,13 @@ namespace xuezhitech\xyprinter;
 
 class XyPrinter
 {
+    private $url = 'https://open.xpyun.net/api/openapi/xprinter';
     protected $config = [
         'user' => '',
         'key' => '',
         'mode' => 0, // 打印模式：默认0
         'expiresIn' => 60, //订单有效期，单位：秒。
+        'backurlFlag' => 1, //打印订单状态回调标识。
     ];
 
     protected $result = [
@@ -44,7 +46,8 @@ class XyPrinter
             return $this->result;
         }
         $timestamp = time();
-        $url = 'https://open.xpyun.net/api/openapi/xprinter/queryPrintersStatus';
+        //$url = 'https://open.xpyun.net/api/openapi/xprinter/queryPrintersStatus';
+        $url = $this->url . '/queryPrintersStatus';
         $data = [
             'user' => $this->config['user'],
             'timestamp' => $timestamp,
@@ -73,7 +76,8 @@ class XyPrinter
             return $this->result;
         }
         $timestamp = time();
-        $url = 'https://open.xpyun.net/api/openapi/xprinter/queryOrderState';
+        //$url = 'https://open.xpyun.net/api/openapi/xprinter/queryOrderState';
+        $url = $this->url . '/queryOrderState';
         $data = [
             'user' => $this->config['user'],
             'timestamp' => $timestamp,
@@ -102,7 +106,8 @@ class XyPrinter
             return $this->result;
         }
         $timestamp = time();
-        $url = 'https://open.xpyun.net/api/openapi/xprinter/delPrinterQueue';
+        //$url = 'https://open.xpyun.net/api/openapi/xprinter/delPrinterQueue';
+        $url = $this->url . '/delPrinterQueue';
         $data = [
             'user' => $this->config['user'],
             'timestamp' => $timestamp,
@@ -131,7 +136,8 @@ class XyPrinter
             return $this->result;
         }
         $timestamp = time();
-        $url = 'https://open.xpyun.net/api/openapi/xprinter/setVoiceType';
+        //$url = 'https://open.xpyun.net/api/openapi/xprinter/setVoiceType';
+        $url = $this->url . '/setVoiceType';
         $data = [
             'user' => $this->config['user'],
             'timestamp' => $timestamp,
@@ -166,7 +172,8 @@ class XyPrinter
             return $this->result;
         }
         $timestamp = time();
-        $url = 'https://open.xpyun.net/api/openapi/xprinter/print';
+        //$url = 'https://open.xpyun.net/api/openapi/xprinter/print';
+        $url = $this->url . '/print';
         $data = [
             'user' => $this->config['user'],
             'timestamp' => $timestamp,
@@ -200,7 +207,8 @@ class XyPrinter
             return $this->result;
         }
         $timestamp = time();
-        $url = 'https://open.xpyun.net/api/openapi/xprinter/queryOrderStatis';
+        //$url = 'https://open.xpyun.net/api/openapi/xprinter/queryOrderStatis';
+        $url = $this->url . '/queryOrderStatis';
         $data = [
             'user' => $this->config['user'],
             'timestamp' => $timestamp,
@@ -230,7 +238,8 @@ class XyPrinter
             return $this->result;
         }
         $timestamp = time();
-        $url = 'https://open.xpyun.net/api/openapi/xprinter/queryPrinterStatus';
+        //$url = 'https://open.xpyun.net/api/openapi/xprinter/queryPrinterStatus';
+        $url = $this->url . '/queryPrinterStatus';
         $data = [
             'user' => $this->config['user'],
             'timestamp' => $timestamp,
@@ -259,7 +268,8 @@ class XyPrinter
             return $this->result;
         }
         $timestamp = time();
-        $url = 'https://open.xpyun.net/api/openapi/xprinter/updPrinter';
+        //$url = 'https://open.xpyun.net/api/openapi/xprinter/updPrinter';
+        $url = $this->url . '/updPrinter';
         $data = [
             'user' => $this->config['user'],
             'timestamp' => $timestamp,
@@ -292,7 +302,8 @@ class XyPrinter
             return $this->result;
         }
         $timestamp = time();
-        $url = 'https://open.xpyun.net/api/openapi/xprinter/delPrinters';
+        //$url = 'https://open.xpyun.net/api/openapi/xprinter/delPrinters';
+        $url = $this->url . '/delPrinters';
         $data = [
             'user' => $this->config['user'],
             'timestamp'=> $timestamp,
@@ -322,7 +333,8 @@ class XyPrinter
             return $this->result;
         }
         $timestamp = time();
-        $url = 'https://open.xpyun.net/api/openapi/xprinter/addPrinters';
+        //$url = 'https://open.xpyun.net/api/openapi/xprinter/addPrinters';
+        $url = $this->url . '/addPrinters';
         $data = [
             'user' => $this->config['user'],
             'timestamp'=> $timestamp,
