@@ -10,7 +10,8 @@ class XyPrinter
         'key' => '',
         'mode' => 0, // 打印模式：默认0
         'expiresIn' => 60, //订单有效期，单位：秒。
-        'backurlFlag' => 1, //打印订单状态回调标识。
+        'backurlFlag' => 0, //打印订单状态回调标识。
+        'debug' => 0 //调试模式。
     ];
 
     protected $result = [
@@ -40,29 +41,22 @@ class XyPrinter
      * 芯烨云 - 批量获取指定打印机状态
      *
      */
-    public function queryPrintersStatus( $snlist=[],$debug=0 ){
+    public function queryPrintersStatus( $snlist=[] ) {
         if ( empty($snlist) ) {
             $this->result['msg'] = '设备编号不能为空!';
             return $this->result;
         }
-        $timestamp = time();
-        //$url = 'https://open.xpyun.net/api/openapi/xprinter/queryPrintersStatus';
+        //业务域名
         $url = $this->url . '/queryPrintersStatus';
-        $data = [
-            'user' => $this->config['user'],
-            'timestamp' => $timestamp,
-            'sign' => $this->getSign($timestamp),
-            'debug' => $debug,
-            'snlist' => $snlist
-        ];
+        //获得公共参数
+        $data = $this->getPublicData();
+        //获得业务参数
+        $data['snlist'] = $snlist;
+        //调用curl
         $result = $this->getCurlInfo($url,$data);
-        if ( isset($result['code']) && intval($result['code'])==0 ) {
-            $this->result['status'] = true;
-            $this->result['data'] = $this->printerStatus[$result['data']];
-        }else{
-            $this->result['status'] = false;
-            $this->result['msg'] = $result['msg'];
-        }
+        //重组数据结棍
+        $this->result = $this->getResultData($result);
+        //返回结果
         return $this->result;
     }
 
@@ -70,29 +64,22 @@ class XyPrinter
      * 芯烨云 - 查询订单是否打印成功
      *
      */
-    public function queryOrderState($orderId,$debug=0) {
+    public function queryOrderState( $orderId ) {
         if ( empty($orderId) ) {
             $this->result['msg'] = '订单编号不能为空!';
             return $this->result;
         }
-        $timestamp = time();
-        //$url = 'https://open.xpyun.net/api/openapi/xprinter/queryOrderState';
+        //业务域名
         $url = $this->url . '/queryOrderState';
-        $data = [
-            'user' => $this->config['user'],
-            'timestamp' => $timestamp,
-            'sign' => $this->getSign($timestamp),
-            'debug' => $debug,
-            'orderId' => $orderId
-        ];
+        //获得公共参数
+        $data = $this->getPublicData();
+        //获得业务参数
+        $data['orderId'] = $orderId;
+        //调用curl
         $result = $this->getCurlInfo($url,$data);
-        if ( isset($result['code']) && intval($result['code'])==0 ) {
-            $this->result['status'] = true;
-            $this->result['data'] = $result['data'];
-        }else{
-            $this->result['status'] = false;
-            $this->result['msg'] = $result['msg'];
-        }
+        //重组数据结棍
+        $this->result = $this->getResultData($result);
+        //返回结果
         return $this->result;
     }
 
@@ -100,29 +87,22 @@ class XyPrinter
      * 芯烨云 - 清空待打印队列
      *
      */
-    public function delPrinterQueue($sn,$debug=0) {
+    public function delPrinterQueue( $sn ) {
         if ( empty($sn) ) {
             $this->result['msg'] = '设备编号不能为空!';
             return $this->result;
         }
-        $timestamp = time();
-        //$url = 'https://open.xpyun.net/api/openapi/xprinter/delPrinterQueue';
+        //业务域名
         $url = $this->url . '/delPrinterQueue';
-        $data = [
-            'user' => $this->config['user'],
-            'timestamp' => $timestamp,
-            'sign' => $this->getSign($timestamp),
-            'debug' => $debug,
-            'sn' => $sn
-        ];
+        //获得公共参数
+        $data = $this->getPublicData();
+        //获得业务参数
+        $data['sn'] = $sn;
+        //调用curl
         $result = $this->getCurlInfo($url,$data);
-        if ( isset($result['code']) && intval($result['code'])==0 ) {
-            $this->result['status'] = true;
-            $this->result['data'] = $result['data'];
-        }else{
-            $this->result['status'] = false;
-            $this->result['msg'] = $result['msg'];
-        }
+        //重组数据结棍
+        $this->result = $this->getResultData($result);
+        //返回结果
         return $this->result;
     }
 
@@ -130,30 +110,23 @@ class XyPrinter
      * 芯烨云 - 设置打印机语音类型
      *
      */
-    public function setVoiceType($sn,$voiceType=3,$debug=0) {
+    public function setVoiceType($sn,$voiceType=3 ) {
         if ( empty($sn) ) {
             $this->result['msg'] = '设备编号不能为空!';
             return $this->result;
         }
-        $timestamp = time();
-        //$url = 'https://open.xpyun.net/api/openapi/xprinter/setVoiceType';
+        //业务域名
         $url = $this->url . '/setVoiceType';
-        $data = [
-            'user' => $this->config['user'],
-            'timestamp' => $timestamp,
-            'sign' => $this->getSign($timestamp),
-            'debug' => $debug,
-            'sn' => $sn,
-            'voiceType' => $voiceType
-        ];
+        //获得公共参数
+        $data = $this->getPublicData();
+        //获得业务参数
+        $data['sn'] = $sn;
+        $data['voiceType'] = $voiceType;
+        //调用curl
         $result = $this->getCurlInfo($url,$data);
-        if ( isset($result['code']) && intval($result['code'])==0 ) {
-            $this->result['status'] = true;
-            $this->result['data'] = $result['data'];
-        }else{
-            $this->result['status'] = false;
-            $this->result['msg'] = $result['msg'];
-        }
+        //重组数据结棍
+        $this->result = $this->getResultData($result);
+        //返回结果
         return $this->result;
     }
 
@@ -162,7 +135,7 @@ class XyPrinter
      * 芯烨云 - 打印小票订单
      *
      */
-    public function print($sn,$content,$debug=0) {
+    public function xprint($sn,$content ) {
         if ( empty($sn) ) {
             $this->result['msg'] = '设备编号不能为空!';
             return $this->result;
@@ -171,25 +144,18 @@ class XyPrinter
             $this->result['msg'] = '打印内容不能为空!';
             return $this->result;
         }
-        $timestamp = time();
-        //$url = 'https://open.xpyun.net/api/openapi/xprinter/print';
+        //业务域名
         $url = $this->url . '/print';
-        $data = [
-            'user' => $this->config['user'],
-            'timestamp' => $timestamp,
-            'sign' => $this->getSign($timestamp),
-            'debug' => $debug,
-            'sn' => $sn,
-            'content' => $content
-        ];
+        //获得公共参数
+        $data = $this->getPublicData();
+        //获得业务参数
+        $data['sn'] = $sn;
+        $data['content'] = $content;
+        //调用curl
         $result = $this->getCurlInfo($url,$data);
-        if ( isset($result['code']) && intval($result['code'])==0 ) {
-            $this->result['status'] = true;
-            $this->result['data'] = $result['data'];
-        }else{
-            $this->result['status'] = false;
-            $this->result['msg'] = $result['msg'];
-        }
+        //重组数据结棍
+        $this->result = $this->getResultData($result);
+        //返回结果
         return $this->result;
     }
 
@@ -197,7 +163,7 @@ class XyPrinter
      * 芯烨云 - 查询指定打印机某天的订单统计数
      *
      */
-    public function queryOrderStatis( $sn,$date,$debug=0 ) {
+    public function queryOrderStatis( $sn,$date ) {
         if ( empty($sn) ) {
             $this->result['msg'] = '设备编号不能为空!';
             return $this->result;
@@ -206,25 +172,18 @@ class XyPrinter
             $this->result['msg'] = '查询日期不能为空!';
             return $this->result;
         }
-        $timestamp = time();
-        //$url = 'https://open.xpyun.net/api/openapi/xprinter/queryOrderStatis';
+        //业务域名
         $url = $this->url . '/queryOrderStatis';
-        $data = [
-            'user' => $this->config['user'],
-            'timestamp' => $timestamp,
-            'sign' => $this->getSign($timestamp),
-            'debug' => $debug,
-            'sn' => $sn,
-            'date' => date('Y-m-d',$date)
-        ];
+        //获得公共参数
+        $data = $this->getPublicData();
+        //获得业务参数
+        $data['sn'] = $sn;
+        $data['date'] = date('Y-m-d',$date);
+        //调用curl
         $result = $this->getCurlInfo($url,$data);
-        if ( isset($result['code']) && intval($result['code'])==0 ) {
-            $this->result['status'] = true;
-            $this->result['data'] = $result['data'];
-        }else{
-            $this->result['status'] = false;
-            $this->result['msg'] = $result['msg'];
-        }
+        //重组数据结棍
+        $this->result = $this->getResultData($result);
+        //返回结果
         return $this->result;
     }
 
@@ -232,29 +191,22 @@ class XyPrinter
      * 芯烨云 - 获取指定打印机状态
      *
      */
-    public function queryPrinterStatus( $sn,$debug=0 ){
+    public function queryPrinterStatus( $sn ){
         if ( empty($sn) ) {
             $this->result['msg'] = '设备编号不能为空!';
             return $this->result;
         }
-        $timestamp = time();
-        //$url = 'https://open.xpyun.net/api/openapi/xprinter/queryPrinterStatus';
+        //业务域名
         $url = $this->url . '/queryPrinterStatus';
-        $data = [
-            'user' => $this->config['user'],
-            'timestamp' => $timestamp,
-            'sign' => $this->getSign($timestamp),
-            'debug' => $debug,
-            'sn' => $sn
-        ];
+        //获得公共参数
+        $data = $this->getPublicData();
+        //获得业务参数
+        $data['sn'] = $sn;
+        //调用curl
         $result = $this->getCurlInfo($url,$data);
-        if ( isset($result['code']) && intval($result['code'])==0 ) {
-            $this->result['status'] = true;
-            $this->result['data'] = $this->printerStatus[$result['data']];
-        }else{
-            $this->result['status'] = false;
-            $this->result['msg'] = $result['msg'];
-        }
+        //重组数据结棍
+        $this->result = $this->getResultData($result);
+        //返回结果
         return $this->result;
     }
 
@@ -262,33 +214,26 @@ class XyPrinter
      * 芯烨云 - 修改打印机信息
      *
      */
-    public function updPrinters( $snlist,$debug=0 ){
+    public function updPrinters( $snlist ){
         if ( empty($snlist['sn']) || empty($snlist['name']) ) {
             $this->result['msg'] = '设备编号/名称不能为空!';
             return $this->result;
         }
-        $timestamp = time();
-        //$url = 'https://open.xpyun.net/api/openapi/xprinter/updPrinter';
+        //业务域名
         $url = $this->url . '/updPrinter';
-        $data = [
-            'user' => $this->config['user'],
-            'timestamp' => $timestamp,
-            'sign' => $this->getSign($timestamp),
-            'debug' => $debug,
-            'sn' => $snlist['sn'],
-            'name' => $snlist['name'],
-        ];
+        //获得公共参数
+        $data = $this->getPublicData();
+        //获得业务参数
+        $data['sn'] = $snlist['sn'];
+        $data['name'] = $snlist['name'];
         if ( isset($snlist['cardno']) ) {
             $data['cardno'] = $snlist['cardno'];
         }
+        //调用curl
         $result = $this->getCurlInfo($url,$data);
-        if ( isset($result['code']) && intval($result['code'])==0 ) {
-            $this->result['status'] = true;
-            $this->result['data'] = $result;
-        }else{
-            $this->result['status'] = false;
-            $this->result['msg'] = $result['msg'];
-        }
+        //重组数据结棍
+        $this->result = $this->getResultData($result);
+        //返回结果
         return $this->result;
     }
 
@@ -296,29 +241,22 @@ class XyPrinter
      * 芯烨云 - 批量删除打印机
      *
      */
-    public function delPrinters( $snlist,$debug=0 ){
+    public function delPrinters( $snlist=[] ){
         if ( empty($snlist) ) {
             $this->result['msg'] = '设备编号不能为空!';
             return $this->result;
         }
-        $timestamp = time();
-        //$url = 'https://open.xpyun.net/api/openapi/xprinter/delPrinters';
+        //业务域名
         $url = $this->url . '/delPrinters';
-        $data = [
-            'user' => $this->config['user'],
-            'timestamp'=> $timestamp,
-            'sign' => $this->getSign($timestamp),
-            'debug' => $debug,
-            'snlist' => $snlist,
-        ];
+        //获得公共参数
+        $data = $this->getPublicData();
+        //获得业务参数
+        $data['snlist'] = $snlist;
+        //调用curl
         $result = $this->getCurlInfo($url,$data);
-        if ( isset($result['code']) && intval($result['code'])==0 ) {
-            $this->result['status'] = true;
-            $this->result['data'] = $result;
-        }else{
-            $this->result['status'] = false;
-            $this->result['data'] = $result['msg'];
-        }
+        //重组数据结棍
+        $this->result = $this->getResultData($result);
+        //返回结果
         return $this->result;
     }
 
@@ -326,31 +264,49 @@ class XyPrinter
      * 芯烨云 - 批量添加打印机
      *
      */
-    public function addPrinters( $items,$debug=0 ){
+    public function addPrinters( $items ){
         //开发者ID/开发者KEY/items 不能为空
         if ( empty($items) ) {
             $this->result['msg'] = '设备信息不能为空!';
             return $this->result;
         }
-        $timestamp = time();
-        //$url = 'https://open.xpyun.net/api/openapi/xprinter/addPrinters';
+        //业务域名
         $url = $this->url . '/addPrinters';
-        $data = [
-            'user' => $this->config['user'],
-            'timestamp'=> $timestamp,
-            'sign' => $this->getSign($timestamp),
-            'debug' => $debug,
-            'items' => $items,
-        ];
+        //获得公共参数
+        $data = $this->getPublicData();
+        //获得业务参数
+        $data['items'] = $items;
+        //调用curl
         $result = $this->getCurlInfo($url,$data);
-        if ( isset($result['code']) && intval($result['code'])==0 ) {
+        //重组数据结棍
+        $this->result = $this->getResultData($result);
+        //返回结果
+        return $this->result;
+    }
+
+    private function getResultData($data){
+        if ( empty($data) ) {
+            $this->result['msg'] = '返回信息为空!';
+            return $this->result;
+        }
+        if ( isset($data['code']) && intval($data['code'])==0 ) {
             $this->result['status'] = true;
-            $this->result['data'] = $result;
+            $this->result['data'] = $this->printerStatus[$data['data']];
         }else{
             $this->result['status'] = false;
-            $this->result['data'] = $result['msg'];
+            $this->result['msg'] = $data['msg'];
         }
-        return $this->result;
+    }
+
+    private function getPublicData(){
+        $timestamp = time();
+        $data = [
+            'user' => $this->config['user'],
+            'timestamp' => $timestamp,
+            'sign' => $this->getSign($timestamp),
+            'debug' => $this->config['debug']
+        ];
+        return $data;
     }
 
     private function getSign($timestamp){
