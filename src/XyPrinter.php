@@ -144,6 +144,19 @@ class XyPrinter
             $this->result['msg'] = '打印内容不能为空!';
             return $this->result;
         }
+        /*
+         * 打印模式为1,expiresIn>0、backurlFlag(1-5) 不能为空
+         * */
+        if ( $this->config['mode']==1 ) { //异步打印 86400
+            if ( empty($this->config['expiresIn']) || $this->config['expiresIn']>86400 ) {
+                $this->result['msg'] = '订单有效期参数异常!' . $this->config['expiresIn'];
+                return $this->result;
+            }
+            if ( empty($this->config['backurlFlag']) || $this->config['backurlFlag']>5 ) {
+                $this->result['msg'] = '打印订单状态回调标识参数异常!' . $this->config['backurlFlag'];
+                return $this->result;
+            }
+        }
         //业务域名
         $url = $this->url . '/print';
         //获得公共参数
